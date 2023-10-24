@@ -34,8 +34,8 @@ public class Result<T> implements Serializable {
         this(errorCode.getCode(), errorCode.getMessage(), null);
     }
 
-    public static <T> Result<T> ok(Integer code, T data) {
-        return new Result<>(code, "ok", data);
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(0, "ok", data);
     }
 
     public static <T> Result<T> fail(ErrorCode errorCode) {
