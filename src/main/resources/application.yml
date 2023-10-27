@@ -11,10 +11,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  session:
+    timeout: 2592000
 server:
   port: 8080
   servlet:
     context-path: /code
+    session:
+      cookie:
+        max-age: 2592000
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
