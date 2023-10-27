@@ -1,13 +1,17 @@
 package com.coding.template.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.coding.template.common.ErrorCode;
 import com.coding.template.exception.BusinessException;
 import com.coding.template.mapper.UserMapper;
 import com.coding.template.model.entity.User;
+import com.coding.template.model.response.UserVo;
 import com.coding.template.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -21,6 +25,7 @@ import static com.coding.template.constant.UserConstant.USER_LOGIN_STATE;
 * @createDate 2023-10-24 14:05:45
 */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
@@ -34,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public User userLogin(String userAccount, String password, HttpServletRequest request) {
+    public UserVo userLogin(String userAccount, String password, HttpServletRequest request) {
         if (StringUtils.isAnyBlank(userAccount,password)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数为空");
         }
@@ -58,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.LOGIN_FAILED,"当前帐号违背注册！");
         }
         request.getSession().setAttribute(USER_LOGIN_STATE,user);
-        return user;
+        return this.getLoginUserVo(user);
     }
 
     /**
@@ -103,6 +108,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.REGISTER_FAILED);
         }
         return user.getId();
+    }
+
+    @Override
+    public UserVo getLoginUserVo(User user) {
+        log.info("params => {}", JSON.toJSON(user));
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求参数为空");
+        }
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(user,userVo);
+        return userVo;
+    }
+
+    @Override
+    public User getLoginUser(HttpServletRequest request) {
+        Object attribute = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) attribute;
+        if (user == null || user.getId() == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        return user;
     }
 }
 

@@ -6,6 +6,8 @@ public enum ErrorCode {
 
     LOGIN_FAILED(401,"登陆失败"),
 
+    NOT_LOGIN(403,"当前未登录"),
+
     REGISTER_FAILED(402,"注册失败");
 
     private final Integer code;

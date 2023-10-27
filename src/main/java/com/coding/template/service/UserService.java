@@ -2,6 +2,7 @@ package com.coding.template.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.coding.template.model.entity.User;
+import com.coding.template.model.response.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,7 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface UserService extends IService<User> {
 
-    User userLogin(String userAccount, String password, HttpServletRequest request);
+    UserVo userLogin(String userAccount, String password, HttpServletRequest request);
 
     long userRegister(String userAccount, String password, String checkCode);
+
+    UserVo getLoginUserVo(User user);
+
+    User getLoginUser(HttpServletRequest request);
 }
