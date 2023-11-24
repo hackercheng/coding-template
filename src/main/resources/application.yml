@@ -1,6 +1,11 @@
 spring:
   application:
     name: coding-template
+  #data:
+  #  mongodb:
+  #    host: 127.0.0.1
+  #    database: register_hosp
+  #    port: 27017
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

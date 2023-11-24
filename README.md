@@ -31,3 +31,6 @@ spring:
 **到此项目的基本配置已经完成，直接运行即可**
 
 ps：直接运行MainApplication即可运行SpringBoot项目。
+
+## Spring Session 分布式登录
+

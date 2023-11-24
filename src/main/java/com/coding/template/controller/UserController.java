@@ -2,21 +2,20 @@ package com.coding.template.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.coding.template.common.DeleteRequest;
 import com.coding.template.common.ErrorCode;
 import com.coding.template.common.Result;
 import com.coding.template.exception.BusinessException;
+import com.coding.template.exception.ThrowUtils;
 import com.coding.template.model.entity.User;
-import com.coding.template.model.request.UserLoginRequest;
-import com.coding.template.model.request.UserQueryRequest;
-import com.coding.template.model.request.UserRegisterRequest;
+import com.coding.template.model.request.*;
 import com.coding.template.model.response.UserVo;
 import com.coding.template.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +58,12 @@ public class UserController {
         return Result.ok(user);
     }
 
+    /**
+     * 获取登录用户
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/get/login")
     public Result<UserVo> getLoginUser(HttpServletRequest request) {
         User user = userService.getLoginUser(request);
@@ -91,6 +96,8 @@ public class UserController {
         return Result.ok(count);
     }
 
+    // crud.start
+
     /**
      * 分页条件查询
      *
@@ -109,6 +116,50 @@ public class UserController {
         Page<User> page = userService.page(new Page<>(current, limit), getQueryWrapper(userQueryRequest));
         return Result.ok(page);
     }
+
+    /**
+     * 新增用户
+     * @param userAddRequest
+     * @return
+     */
+    @PostMapping("/add")
+    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
+        if (userAddRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = new User();
+        BeanUtils.copyProperties(userAddRequest, user);
+        boolean result = userService.save(user);
+        ThrowUtils.throwIf(!result, ErrorCode.PARAMS_ERROR);
+        return Result.ok(user.getId());
+    }
+
+    /**
+     * 删除用户
+     * @param deleteRequest
+     * @return
+     */
+    @PostMapping("/delete")
+    public Result<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest) {
+        if (deleteRequest == null || deleteRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean remove = userService.removeById(deleteRequest.getId());
+        return Result.ok(remove);
+    }
+
+    @PostMapping("/update")
+    public Result<Boolean> updateUser(@RequestBody UserUpdateRquest userUpdateRquest) {
+        if (userUpdateRquest == null || userUpdateRquest.getId()<=0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = new User();
+        BeanUtils.copyProperties(userUpdateRquest,user);
+        boolean update = userService.updateById(user);
+        ThrowUtils.throwIf(!update,ErrorCode.PARAMS_ERROR);
+        return Result.ok(true);
+    }
+    // crud.end
 
     /**
      * 获取查询条件

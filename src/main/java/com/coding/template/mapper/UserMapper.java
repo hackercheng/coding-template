@@ -2,6 +2,9 @@ package com.coding.template.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.coding.template.model.entity.User;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,6 +14,11 @@ import com.coding.template.model.entity.User;
 */
 public interface UserMapper extends BaseMapper<User> {
 
+    @Select("select * from User")
+    List<User> list();
+
+    @Select("select * from User")
+    User list1();
 }
 
 
