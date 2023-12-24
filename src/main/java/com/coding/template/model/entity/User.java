@@ -17,10 +17,50 @@ import java.util.Date;
 @Data
 public class User implements Serializable {
     /**
-     * 主键
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 账号
+     */
+    private String userAccount;
+
+    /**
+     * 密码
+     */
+    private String userPassword;
+
+    /**
+     * 微信开放平台id
+     */
+    private String unionId;
+
+    /**
+     * 公众号openId
+     */
+    private String mpOpenId;
+
+    /**
+     * 用户昵称
+     */
+    private String userName;
+
+    /**
+     * 用户头像
+     */
+    private String userAvatar;
+
+    /**
+     * 用户简介
+     */
+    private String userProfile;
+
+    /**
+     * 用户角色：user/admin/ban
+     */
+    private String userRole;
 
     /**
      * 创建时间
@@ -33,44 +73,9 @@ public class User implements Serializable {
     private Date updateTime;
 
     /**
-     * 是否删除(0-未删, 1-已删)
+     * 是否删除
      */
-    private Integer isDeleted;
-
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 账户名
-     */
-    private String userAccount;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 用户头像
-     */
-    private String userAvatar;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 用户角色(0-管理员，1-用户)
-     */
-    private Integer userRole;
+    private Integer isDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

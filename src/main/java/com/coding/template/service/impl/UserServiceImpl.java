@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("userAccount",userAccount);
-        queryWrapper.like("password",encryptPassword);
+        queryWrapper.like("userPassword",encryptPassword);
         User user = this.baseMapper.selectOne(queryWrapper);
 
         if (user == null) {
@@ -101,7 +101,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT+ password).getBytes());
         User user  = new User();
         user.setUserAccount(userAccount);
-        user.setPassword(encryptPassword);
+        user.setUserPassword(encryptPassword);
 
         boolean save = this.save(user);
         if (!save) {

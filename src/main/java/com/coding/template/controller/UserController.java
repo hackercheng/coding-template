@@ -1,5 +1,7 @@
 package com.coding.template.controller;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,10 +43,10 @@ public class UserController {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户请求体为空");
         }
-
+        log.info("params =>",JSON.toJSON(userLoginRequest));
         // 获取表单数据，并进行校验
         String userAccount = userLoginRequest.getUserAccount();
-        String password = userLoginRequest.getPassword();
+        String password = userLoginRequest.getUserPassword();
         if (StringUtils.isAnyBlank(userAccount, password)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
@@ -81,9 +83,9 @@ public class UserController {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户请求体为空");
         }
-
+        log.info("params =>",JSON.toJSON(userRegisterRequest));
         String userAccount = userRegisterRequest.getUserAccount();
-        String password = userRegisterRequest.getPassword();
+        String password = userRegisterRequest.getUserPassword();
         String checkCode = userRegisterRequest.getCheckCode();
         if (StringUtils.isAnyBlank(userAccount, password, checkCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -109,30 +111,31 @@ public class UserController {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户请求体为空");
         }
-        String userAccount = userQueryRequest.getUserAccount();
-        String username = userQueryRequest.getUsername();
+        log.info("param => {}",JSON.toJSON(userQueryRequest));
         long current = userQueryRequest.getCurrent();
         long limit = userQueryRequest.getLimit();
         Page<User> page = userService.page(new Page<>(current, limit), getQueryWrapper(userQueryRequest));
         return Result.ok(page);
     }
 
-    /**
-     * 新增用户
-     * @param userAddRequest
-     * @return
-     */
-    @PostMapping("/add")
-    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
-        if (userAddRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userAddRequest, user);
-        boolean result = userService.save(user);
-        ThrowUtils.throwIf(!result, ErrorCode.PARAMS_ERROR);
-        return Result.ok(user.getId());
-    }
+//    /**
+//     * 新增用户
+//     * @param userAddRequest
+//     * @return
+//     */
+//    @PostMapping("/add")
+//    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
+//        if (userAddRequest == null) {
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//        }
+//        log.info("param => {}",JSON.toJSON(userAddRequest));
+//        User user = new User();
+//        BeanUtils.copyProperties(userAddRequest, user);
+//        log.info("user => {}",JSON.toJSON(user));
+//        boolean result = userService.save(user);
+//        ThrowUtils.throwIf(!result, ErrorCode.PARAMS_ERROR);
+//        return Result.ok(user.getId());
+//    }
 
     /**
      * 删除用户
@@ -144,6 +147,7 @@ public class UserController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        log.info("id:",deleteRequest.getId());
         boolean remove = userService.removeById(deleteRequest.getId());
         return Result.ok(remove);
     }
@@ -153,8 +157,10 @@ public class UserController {
         if (userUpdateRquest == null || userUpdateRquest.getId()<=0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        log.info("params => {}",JSON.toJSON(userUpdateRquest));
         User user = new User();
         BeanUtils.copyProperties(userUpdateRquest,user);
+        log.info("user json => {}"+JSON.toJSON(user));
         boolean update = userService.updateById(user);
         ThrowUtils.throwIf(!update,ErrorCode.PARAMS_ERROR);
         return Result.ok(true);
@@ -173,7 +179,7 @@ public class UserController {
         }
 
         String userAccount = userQueryRequest.getUserAccount();
-        String username = userQueryRequest.getUsername();
+        String username = userQueryRequest.getUserName();
 
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(StringUtils.isBlank(userAccount), "userAccount", userAccount);

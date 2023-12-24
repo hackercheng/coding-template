@@ -1,14 +1,16 @@
 package com.coding.template.common;
 
 public enum ErrorCode {
-    Success(200,"成功"),
-    PARAMS_ERROR(400,"请求参数错误"),
+    Success(20000,"成功"),
+    PARAMS_ERROR(40000,"请求参数错误"),
 
-    LOGIN_FAILED(401,"登陆失败"),
+    LOGIN_FAILED(40001,"登陆失败"),
 
-    NOT_LOGIN(403,"当前未登录"),
+    NOT_LOGIN(40003,"当前未登录"),
 
-    REGISTER_FAILED(402,"注册失败");
+    SYSTEM_ERROR(50000,"系统错误"),
+
+    REGISTER_FAILED(40002,"注册失败");
 
     private final Integer code;
 

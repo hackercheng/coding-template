@@ -29,7 +29,7 @@ public class UserUpdateRquest implements Serializable {
     /**
      * 用户角色：user/admin/ban
      */
-    private String userRole;
+    private Integer userRole;
 
     private static final long serialVersionUID = 1L;
 }
