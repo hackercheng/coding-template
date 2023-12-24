@@ -10,7 +10,9 @@ public enum ErrorCode {
 
     SYSTEM_ERROR(50000,"系统错误"),
 
-    REGISTER_FAILED(40002,"注册失败");
+    REGISTER_FAILED(40002,"注册失败"),
+
+    NOT_FOUND_ERROR(40005, "未查找到用户");
 
     private final Integer code;
 

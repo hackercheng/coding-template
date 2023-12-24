@@ -72,6 +72,31 @@ public class UserController {
         return Result.ok(userService.getLoginUserVo(user));
     }
 
+    @PostMapping("/logout")
+    public Result<Boolean> userLogout(HttpServletRequest request) {
+        if (request == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean result = userService.userLogout(request);
+        return Result.ok(result);
+    }
+
+    /**
+     * 获取用户详细信息
+     * @param id
+     * @param request
+     * @return
+     */
+    @GetMapping("/get")
+    public Result<User> getUserInfo(long id, HttpServletRequest request) {
+        if (id<=0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getById(id);
+        ThrowUtils.throwIf(user == null,ErrorCode.NOT_FOUND_ERROR);
+        return Result.ok(user);
+    }
+
     /**
      * 注册
      *
@@ -118,24 +143,24 @@ public class UserController {
         return Result.ok(page);
     }
 
-//    /**
-//     * 新增用户
-//     * @param userAddRequest
-//     * @return
-//     */
-//    @PostMapping("/add")
-//    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
-//        if (userAddRequest == null) {
-//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-//        }
-//        log.info("param => {}",JSON.toJSON(userAddRequest));
-//        User user = new User();
-//        BeanUtils.copyProperties(userAddRequest, user);
-//        log.info("user => {}",JSON.toJSON(user));
-//        boolean result = userService.save(user);
-//        ThrowUtils.throwIf(!result, ErrorCode.PARAMS_ERROR);
-//        return Result.ok(user.getId());
-//    }
+    /**
+     * 新增用户
+     * @param userAddRequest
+     * @return
+     */
+    @PostMapping("/add")
+    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
+        if (userAddRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        log.info("param => {}",JSON.toJSON(userAddRequest));
+        User user = new User();
+        BeanUtils.copyProperties(userAddRequest, user);
+        log.info("user => {}",JSON.toJSON(user));
+        boolean result = userService.save(user);
+        ThrowUtils.throwIf(!result, ErrorCode.PARAMS_ERROR);
+        return Result.ok(user.getId());
+    }
 
     /**
      * 删除用户

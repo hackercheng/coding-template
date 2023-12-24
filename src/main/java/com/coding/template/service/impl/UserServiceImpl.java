@@ -130,6 +130,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return user;
     }
+
+    @Override
+    public boolean userLogout(HttpServletRequest request) {
+        if (request.getSession().getAttribute(USER_LOGIN_STATE )== null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN,"未登录");
+        }
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return true;
+    }
 }
 
 
